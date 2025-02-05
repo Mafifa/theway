@@ -3,6 +3,8 @@ productName: elway
 directories:
   buildResources: build
 files:
+  - '!**/todo/*'
+  - '!**/uploads/*'
   - '!**/.vscode/*'
   - '!src/*'
   - '!electron.vite.config.{js,ts,mjs,cjs}'

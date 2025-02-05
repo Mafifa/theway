@@ -11,6 +11,12 @@ export default function App () {
   const [isDarkMode, setIsDarkMode] = useState(false)
   const [isServerOn, setIsServerOn] = useState(true)
   const [showQRModal, setShowQRModal] = useState(false)
+
+  useEffect(() => {
+    window.electron.ipcRenderer.invoke("on-off").then((isOn) => {
+      console.log(isOn)
+    })
+  }, [])
   const serverAddress = "http://localhost:3000" // You can replace this with your actual server address
 
   useEffect(() => {

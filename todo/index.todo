@@ -1,1 +1,5 @@
-
+☐ Mejorar la toma de puerto, la aplicacion debe de poder tomar cualquier puerto libre disponible
+☐ Crear el path dinamico para poder guardar archivos
+ ☐ Path para modo de desarrollo (Carpeta raiz llamada uploads)
+ ☐ Path en modo produccion (carpeta upload en escritorio) o poder guardar una en especifico
+ 

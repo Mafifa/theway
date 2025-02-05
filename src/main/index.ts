@@ -2,12 +2,15 @@ import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
+import startServer from './core/server'
+import { getLocalIP } from './core/utils/utils'
 
 function createWindow(): void {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 900,
+    width: 1200,
     height: 670,
+    minWidth: 1200,
     show: false,
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
@@ -49,8 +52,23 @@ app.whenReady().then(() => {
     optimizer.watchWindowShortcuts(window)
   })
 
-  // IPC test
-  ipcMain.on('ping', () => console.log('pong'))
+  const { io, server } = startServer()
+
+  ipcMain.handle('on-off', (_, port = 3000) => {
+    const localIP = getLocalIP()
+
+    if (server.listening) {
+      server.close()
+      return false
+    } else {
+      server.listen(port, '0.0.0.0', () => {
+        console.log('Servidor corriendo en:')
+        console.log(`- Local: http://localhost:${port}`)
+        console.log(`- Red:   http://${localIP}:${port}`)
+      })
+      return { red: `http://${localIP}:${port}` }
+    }
+  })
 
   createWindow()
 
