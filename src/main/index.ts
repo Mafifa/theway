@@ -52,7 +52,7 @@ app.whenReady().then(() => {
     optimizer.watchWindowShortcuts(window)
   })
 
-  const { io, server } = startServer()
+  const { server } = startServer()
 
   ipcMain.handle('on-off', (_, port = 3000) => {
     const localIP = getLocalIP()

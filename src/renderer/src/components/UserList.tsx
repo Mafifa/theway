@@ -1,22 +1,15 @@
 import { useState, useEffect } from "react"
 
-interface User {
-  id: number
-  ip: string
-  mac: string
-}
-
 export default function UserList () {
-  const [users, setUsers] = useState<User[]>([])
+  const [users, setUsers] = useState<[]>([])
 
   useEffect(() => {
-    // Simulating data fetch
-    const mockUsers: User[] = Array.from({ length: 20 }, (_, i) => ({
-      id: i + 1,
-      ip: `192.168.1.${i + 1}`,
-      mac: `00:1B:44:11:3A:${i < 10 ? "0" + i : i}`,
-    }))
-    setUsers(mockUsers)
+    const handleDivesUpdate = (_event, devices) => {
+      setUsers(devices)
+    }
+
+    window.electron.ipcRenderer.on('devices', handleDivesUpdate)
+
   }, [])
 
   return (
@@ -43,14 +36,13 @@ export default function UserList () {
           <thead>
             <tr className="text-left border-b dark:border-gray-700">
               <th className="pb-2">IP</th>
-              <th className="pb-2">MAC</th>
             </tr>
           </thead>
           <tbody>
-            {users.map((user) => (
-              <tr key={user.id} className="border-b dark:border-gray-700">
-                <td className="py-2">{user.ip}</td>
-                <td className="py-2">{user.mac}</td>
+            {/* FIXME: Arreglar que no sea con index */}
+            {users.map((user, index) => (
+              <tr key={index} className="border-b dark:border-gray-700">
+                <td className="py-2">{user}</td>
               </tr>
             ))}
           </tbody>

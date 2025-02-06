@@ -2,27 +2,28 @@ import { useState, useEffect } from "react"
 
 interface Transfer {
   id: number
-  user: string
-  fileName: string
+  clientIP: string
   progress: number
   speed: string
-  totalSize: string
+  uploaded: string
+  fileName: string
+  total: string
+  status: string
 }
 
 export default function TransferList () {
   const [transfers, setTransfers] = useState<Transfer[]>([])
 
   useEffect(() => {
-    // Simulating data fetch
-    const mockTransfers: Transfer[] = Array.from({ length: 10 }, (_, i) => ({
-      id: i + 1,
-      user: `User ${i + 1}`,
-      fileName: `file_${i + 1}.zip`,
-      progress: Math.random() * 100,
-      speed: `${(Math.random() * 10).toFixed(2)} MB/s`,
-      totalSize: `${(Math.random() * 1000).toFixed(2)} MB`,
-    }))
-    setTransfers(mockTransfers)
+    const activeUploads = (event, transfers) => {
+      setTransfers(transfers)
+    }
+    window.electron.ipcRenderer.on("active-uploads", activeUploads)
+
+    return () => {
+      window.electron.ipcRenderer.removeAllListeners("active-uploads")
+    }
+
   }, [])
 
   return (
@@ -48,7 +49,7 @@ export default function TransferList () {
         {transfers.map((transfer) => (
           <div key={transfer.id} className="p-4 bg-gray-100 dark:bg-gray-700 rounded-lg transition-colors duration-300">
             <div className="flex justify-between mb-2">
-              <span className="font-semibold">{transfer.user}</span>
+              <span className="font-semibold">{transfer.clientIP}</span>
               <span>{transfer.fileName}</span>
             </div>
             <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2.5 mb-2">
@@ -60,7 +61,7 @@ export default function TransferList () {
             <div className="flex justify-between text-sm">
               <span>{transfer.progress.toFixed(2)}%</span>
               <span>{transfer.speed}</span>
-              <span>{transfer.totalSize}</span>
+              <span>{transfer.total}</span>
             </div>
           </div>
         ))}

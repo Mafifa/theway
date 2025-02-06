@@ -1,5 +1,11 @@
-☐ Mejorar la toma de puerto, la aplicacion debe de poder tomar cualquier puerto libre disponible
-☐ Crear el path dinamico para poder guardar archivos
- ☐ Path para modo de desarrollo (Carpeta raiz llamada uploads)
- ☐ Path en modo produccion (carpeta upload en escritorio) o poder guardar una en especifico
- 
+☐ Arreglar en el frontend: Quitar la direccion mac ya que no se usa
+
+☐ Arreglar que no se muestran las transferencias de archivos en el frontend
+
+☐ Agregar encendido y apagado del servidor
+
+☐ Agregar mustra de direccion ip en la ventana pricipal
+
+☐ Agregar mustra de codigo qr y direccion ip
+
+☐ Traducer a ingles los comentarios y el apartado del cliente

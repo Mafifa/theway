@@ -6,8 +6,8 @@ import fs from 'fs'
 import { is } from '@electron-toolkit/utils'
 import router from './routes'
 import multerConfig from './middleware/multerConfig'
-import { getLocalIP } from './utils/utils'
 import os from 'os'
+import { BrowserWindow } from 'electron'
 const app = express()
 
 export default function startServer(pathStorage?: string) {
@@ -50,7 +50,7 @@ export default function startServer(pathStorage?: string) {
   const upload = multerConfig(storagePath)
 
   // Importar rutas
-  app.use('/api', router(upload, io, connectedDevices))
+  app.use('/', router(upload, io, connectedDevices))
 
   // WebSocket para manejar dispositivos conectados
   io.on('connection', (socket) => {
@@ -58,12 +58,20 @@ export default function startServer(pathStorage?: string) {
     console.log(`Dispositivo conectado: ${clientIP}`)
     connectedDevices.add(clientIP)
 
-    io.emit('devices', Array.from(connectedDevices))
+    //Enviar la lista de dispositivos conectados a todas los clientes
+    const allWindows = BrowserWindow.getAllWindows()
+
+    allWindows.forEach((w) => {
+      w.webContents.send('devices', Array.from(connectedDevices))
+    })
 
     socket.on('disconnect', () => {
       console.log(`Dispositivo desconectado: ${clientIP}`)
       connectedDevices.delete(clientIP)
-      io.emit('devices', Array.from(connectedDevices))
+
+      allWindows.forEach((w) => {
+        w.webContents.send('devices', Array.from(connectedDevices))
+      })
     })
   })
 
