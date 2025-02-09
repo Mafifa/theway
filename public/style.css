@@ -2,8 +2,20 @@
   --primary-color: #4a90e2;
   --secondary-color: #f5f5f5;
   --text-color: #333;
+  --background-color: #fff;
   --success-color: #4caf50;
   --error-color: #f44336;
+  --border-color: #e0e0e0;
+  --hover-color: #e8f0fe;
+}
+
+.dark-mode {
+  --primary-color: #64b5f6;
+  --secondary-color: #333;
+  --text-color: #f5f5f5;
+  --background-color: #1a1a1a;
+  --border-color: #444;
+  --hover-color: #2c2c2c;
 }
 
 * {
@@ -13,37 +25,84 @@
 }
 
 body {
-  font-family: "Arial", sans-serif;
+  font-family: 'Roboto', sans-serif;
   line-height: 1.6;
   color: var(--text-color);
   background-color: var(--secondary-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .container {
-  max-width: 800px;
+  max-width: 1000px;
   margin: 0 auto;
   padding: 20px;
 }
 
 header {
-  text-align: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 30px;
+  padding: 20px;
+  background-color: var(--background-color);
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  flex-wrap: wrap;
+  /* Permite que los elementos se envuelvan en pantallas pequeñas */
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+  /* Permite que el contenido del encabezado ocupe el espacio disponible */
+  margin-bottom: 10px;
+  /* Añade un poco de espacio debajo en pantallas pequeñas */
 }
 
 h1 {
   color: var(--primary-color);
+  font-size: 2.5rem;
+  margin-right: 20px;
 }
 
-h2 {
-  margin-bottom: 15px;
+.header-subtitle {
+  font-size: 1rem;
+  color: var(--text-color);
+  opacity: 0.7;
+}
+
+#theme-toggle {
+  background: var(--background-color);
+  border: 2px solid var(--primary-color);
+  color: var(--primary-color);
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 10px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  /* Ancho fijo */
+  height: 40px;
+  /* Altura fija */
+  min-width: 40px;
+  /* Ancho mínimo */
+}
+
+#theme-toggle:hover {
+  background-color: var(--primary-color);
+  color: var(--background-color);
 }
 
 section {
-  background-color: #fff;
+  background-color: var(--background-color);
   border-radius: 8px;
   padding: 20px;
   margin-bottom: 30px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 #drop-zone {
@@ -57,7 +116,7 @@ section {
 
 #drop-zone:hover,
 #drop-zone.drag-over {
-  background-color: rgba(74, 144, 226, 0.1);
+  background-color: var(--hover-color);
 }
 
 #drop-zone i {
@@ -99,41 +158,98 @@ button:hover {
   background-color: #3a7bc8;
 }
 
-#progress-container {
+#file-list {
   margin-top: 20px;
 }
 
-#progress-bar {
-  width: 100%;
-  height: 20px;
-  background-color: #e0e0e0;
-  border-radius: 10px;
-  overflow: hidden;
+.file-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background-color: var(--background-color);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  margin-bottom: 10px;
+  transition: background-color 0.3s ease;
 }
 
-#progress-fill {
-  width: 0;
+.file-item:hover {
+  background-color: var(--hover-color);
+}
+
+.file-name {
+  flex-grow: 1;
+  margin-right: 10px;
+}
+
+.file-size {
+  color: #777;
+  margin-right: 10px;
+}
+
+#uploads-container {
+  margin-top: 30px;
+}
+
+.upload-item {
+  background-color: var(--background-color);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 15px;
+  transition: box-shadow 0.3s ease;
+}
+
+.upload-item:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.upload-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.upload-item-name {
+  font-weight: bold;
+}
+
+.upload-item-size {
+  color: #777;
+}
+
+.upload-item-progress {
+  height: 6px;
+  background-color: var(--secondary-color);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.upload-item-progress-bar {
   height: 100%;
   background-color: var(--primary-color);
   transition: width 0.3s ease;
 }
 
-#progress-text {
-  text-align: center;
-  margin-top: 5px;
+.upload-item-info {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  font-size: 0.9rem;
 }
 
-#devicesList {
-  list-style-type: none;
+.upload-item-actions {
+  display: flex;
+  justify-content: flex-end;
 }
 
-#devicesList li {
-  padding: 10px;
-  border-bottom: 1px solid #e0e0e0;
-}
-
-#devicesList li:last-child {
-  border-bottom: none;
+.upload-item-actions button {
+  padding: 5px 10px;
+  font-size: 0.9rem;
+  margin-left: 10px;
 }
 
 #notification {
@@ -160,32 +276,40 @@ button:hover {
   display: none;
 }
 
-#file-list {
-  margin-top: 20px;
-}
-
-.file-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px;
-  background-color: #f9f9f9;
-  border-radius: 4px;
-  margin-bottom: 10px;
-}
-
-.file-name {
-  flex-grow: 1;
-  margin-right: 10px;
-}
-
-.file-size {
-  color: #777;
-}
-
-@media (max-width: 600px) {
+@media (max-width: 768px) {
   .container {
     padding: 10px;
+  }
+
+  header {
+    flex-direction: row;
+    /* Cambiado de column a row */
+    align-items: center;
+    /* Centrar verticalmente */
+    justify-content: space-between;
+    /* Distribuir el espacio entre los elementos */
+  }
+
+  .header-content {
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 0;
+    /* Eliminado el margen inferior */
+  }
+
+  h1 {
+    font-size: 2rem;
+    margin-right: 0;
+    margin-bottom: 5px;
+  }
+
+  .header-subtitle {
+    font-size: 0.9rem;
+  }
+
+  #theme-toggle {
+    margin-left: 10px;
+    /* Añadir un poco de espacio a la izquierda */
   }
 
   #drop-zone {
@@ -197,5 +321,33 @@ button:hover {
     display: block;
     width: 100%;
     margin-bottom: 10px;
+  }
+
+  .upload-item-actions {
+    flex-direction: column;
+  }
+
+  .upload-item-actions button {
+    margin-left: 0;
+    margin-top: 10px;
+  }
+}
+
+@media (max-width: 375px) {
+  h1 {
+    font-size: 1.8rem;
+  }
+
+  .header-subtitle {
+    font-size: 0.8rem;
+  }
+
+  #theme-toggle {
+    font-size: 1rem;
+    padding: 8px;
+    width: 36px;
+    /* Ligeramente más pequeño para pantallas muy pequeñas */
+    height: 36px;
+    min-width: 36px;
   }
 }

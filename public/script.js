@@ -1,17 +1,14 @@
 const socket = io()
 const uploadForm = document.getElementById('uploadForm')
 const fileInput = document.getElementById('fileInput')
-const progressBar = document.getElementById('progress-fill')
-const progressText = document.getElementById('progress-text')
-const progressContainer = document.getElementById('progress-container')
-const devicesList = document.getElementById('devicesList')
 const dropZone = document.getElementById('drop-zone')
 const fileList = document.getElementById('file-list')
+const uploadsContainer = document.getElementById('uploads-container')
 const notification = document.getElementById('notification')
-const speedText = document.getElementById('speed-text')
-const uploadedText = document.getElementById('uploaded-text')
+const themeToggle = document.getElementById('theme-toggle')
 
 let files = []
+let uploads = new Map()
 
 // Funciones de utilidad
 const formatFileSize = (bytes) => {
@@ -43,6 +40,29 @@ const updateFileList = () => {
         `
     fileList.appendChild(fileItem)
   })
+}
+
+const createUploadItem = (file) => {
+  const uploadItem = document.createElement('div')
+  uploadItem.className = 'upload-item'
+  uploadItem.innerHTML = `
+        <div class="upload-item-header">
+            <span class="upload-item-name">${file.name}</span>
+            <span class="upload-item-size">${formatFileSize(file.size)}</span>
+        </div>
+        <div class="upload-item-progress">
+            <div class="upload-item-progress-bar" style="width: 0%"></div>
+        </div>
+        <div class="upload-item-info">
+            <span class="upload-item-status">Esperando...</span>
+            <span class="upload-item-speed"></span>
+        </div>
+        <div class="upload-item-actions">
+            <button class="upload-item-pause"><i class="fas fa-pause"></i> Pausar</button>
+            <button class="upload-item-cancel"><i class="fas fa-times"></i> Cancelar</button>
+        </div>
+    `
+  return uploadItem
 }
 
 // Event Listeners
@@ -84,56 +104,140 @@ uploadForm.addEventListener('submit', async (e) => {
     return
   }
 
-  progressContainer.classList.remove('hidden')
-  let overallProgress = 0
-
   for (let i = 0; i < files.length; i++) {
+    const file = files[i]
+    const uploadItem = createUploadItem(file)
+    uploadsContainer.appendChild(uploadItem)
+
     const formData = new FormData()
-    formData.append('file', files[i])
+    formData.append('file', file)
 
-    try {
-      const response = await fetch('/upload', {
-        method: 'POST',
-        headers: {
-          'x-file-size': files[i].size,
-          'x-socket-id': socket.id
-        },
-        body: formData
-      })
+    const xhr = new XMLHttpRequest()
+    xhr.open('POST', '/upload', true)
+    xhr.setRequestHeader('x-file-size', file.size)
+    xhr.setRequestHeader('x-socket-id', socket.id)
 
-      if (response.ok) {
-        overallProgress = ((i + 1) / files.length) * 100
-        progressBar.style.width = `${overallProgress}%`
-        progressText.textContent = `${Math.round(overallProgress)}%`
-      } else {
-        throw new Error('Error en la subida del archivo')
+    const uploadId = Date.now().toString() + i
+    uploads.set(uploadId, { xhr, uploadItem, paused: false })
+
+    xhr.upload.onprogress = (event) => {
+      if (event.lengthComputable) {
+        const percentComplete = (event.loaded / event.total) * 100
+        const progressBar = uploadItem.querySelector('.upload-item-progress-bar')
+        const status = uploadItem.querySelector('.upload-item-status')
+        const speed = uploadItem.querySelector('.upload-item-speed')
+
+        progressBar.style.width = percentComplete + '%'
+        status.textContent = `${Math.round(percentComplete)}%`
+        speed.textContent = `${formatFileSize((event.loaded / (Date.now() - xhr.startTime)) * 1000)}/s`
       }
-    } catch (error) {
-      console.error('Error:', error)
-      showNotification(`Error al subir ${files[i].name}`, 'error')
     }
+
+    xhr.onload = () => {
+      if (xhr.status === 200) {
+        showNotification(`${file.name} se ha subido exitosamente.`, 'success')
+        uploads.delete(uploadId)
+        uploadItem.remove()
+      } else {
+        showNotification(`Error al subir ${file.name}`, 'error')
+      }
+    }
+
+    xhr.onerror = () => {
+      showNotification(`Error al subir ${file.name}`, 'error')
+    }
+
+    xhr.startTime = Date.now()
+    xhr.send(formData)
+
+    // Event listeners para pausar y cancelar
+    const pauseButton = uploadItem.querySelector('.upload-item-pause')
+    const cancelButton = uploadItem.querySelector('.upload-item-cancel')
+
+    pauseButton.addEventListener('click', () => {
+      const upload = uploads.get(uploadId)
+      if (upload.paused) {
+        upload.xhr.open('POST', '/upload', true)
+        upload.xhr.setRequestHeader('x-file-size', file.size)
+        upload.xhr.setRequestHeader('x-socket-id', socket.id)
+        upload.xhr.send(formData)
+        upload.paused = false
+        pauseButton.innerHTML = '<i class="fas fa-pause"></i> Pausar'
+      } else {
+        upload.xhr.abort()
+        upload.paused = true
+        pauseButton.innerHTML = '<i class="fas fa-play"></i> Reanudar'
+      }
+    })
+
+    cancelButton.addEventListener('click', () => {
+      const upload = uploads.get(uploadId)
+      upload.xhr.abort()
+      uploads.delete(uploadId)
+      uploadItem.remove()
+    })
   }
 
-  showNotification('Todos los archivos se han subido exitosamente.', 'success')
-  progressContainer.classList.add('hidden')
   files = []
   updateFileList()
 })
 
+// Manejar desconexión
+window.addEventListener('beforeunload', () => {
+  uploads.forEach((upload) => {
+    upload.xhr.abort()
+  })
+  socket.disconnect()
+})
+
+// Cambiar tema
+themeToggle.addEventListener('click', () => {
+  document.body.classList.toggle('dark-mode')
+  const icon = themeToggle.querySelector('i')
+  if (document.body.classList.contains('dark-mode')) {
+    icon.classList.remove('fa-moon')
+    icon.classList.add('fa-sun')
+  } else {
+    icon.classList.remove('fa-sun')
+    icon.classList.add('fa-moon')
+  }
+})
+
+// WebSocket event listeners
+socket.on('connect', () => {
+  console.log('Conectado al servidor')
+})
+
+socket.on('disconnect', () => {
+  console.log('Desconectado del servidor')
+  showNotification('Se ha perdido la conexión con el servidor', 'error')
+})
+
 // Actualizar la lista de dispositivos conectados
 socket.on('devices', (devices) => {
-  devicesList.innerHTML = ''
-  devices.forEach((device) => {
-    const li = document.createElement('li')
-    li.textContent = device
-    devicesList.appendChild(li)
-  })
+  const devicesList = document.getElementById('devicesList')
+  if (devicesList) {
+    devicesList.innerHTML = ''
+    devices.forEach((device) => {
+      const li = document.createElement('li')
+      li.textContent = device
+      devicesList.appendChild(li)
+    })
+  }
 })
 
 // Actualizar el progreso desde el servidor
 socket.on('uploadProgress', (data) => {
-  progressBar.style.width = `${data.progress}%`
-  progressText.textContent = `${data.progress}%`
-  speedText.textContent = `Velocidad: ${data.speed}`
-  uploadedText.textContent = `Transferido: ${data.uploaded} de ${data.total}`
+  const upload = Array.from(uploads.values()).find(
+    (u) => u.uploadItem.querySelector('.upload-item-name').textContent === data.fileName
+  )
+  if (upload) {
+    const progressBar = upload.uploadItem.querySelector('.upload-item-progress-bar')
+    const status = upload.uploadItem.querySelector('.upload-item-status')
+    const speed = upload.uploadItem.querySelector('.upload-item-speed')
+
+    progressBar.style.width = `${data.progress}%`
+    status.textContent = `${data.progress}%`
+    speed.textContent = data.speed
+  }
 })
