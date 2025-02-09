@@ -1,16 +1,9 @@
-import { useState, useEffect } from "react"
+type Users = string[]
 
-export default function UserList () {
-  const [users, setUsers] = useState<[]>([])
+export default function UserList ({ users }: { users: Users }) {
 
-  useEffect(() => {
-    const handleDivesUpdate = (_event, devices) => {
-      setUsers(devices)
-    }
+  console.log(users);
 
-    window.electron.ipcRenderer.on('devices', handleDivesUpdate)
-
-  }, [])
 
   return (
     <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md transition-colors duration-300">
@@ -51,4 +44,3 @@ export default function UserList () {
     </div>
   )
 }
-

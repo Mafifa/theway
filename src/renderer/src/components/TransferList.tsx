@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 
 interface Transfer {
-  id: number
+  id: string
   clientIP: string
   progress: number
   speed: string
@@ -13,18 +13,62 @@ interface Transfer {
 
 export default function TransferList () {
   const [transfers, setTransfers] = useState<Transfer[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    const activeUploads = (event, transfers) => {
-      setTransfers(transfers)
+    const handleTransfers = (_event, data: Transfer[]) => {
+      console.log("Received transfers:", data)
+      if (Array.isArray(data)) {
+        setTransfers(data)
+      } else {
+        console.error("Received non-array data:", data)
+        setTransfers([])
+      }
+      setLoading(false)
     }
-    window.electron.ipcRenderer.on("active-uploads", activeUploads)
+
+    const fetchInitialTransfers = async () => {
+      try {
+        if (window.electron && window.electron.ipcRenderer) {
+          const initialTransfers = await window.electron.ipcRenderer.invoke("get-active-uploads")
+          console.log("Initial transfers:", initialTransfers)
+          if (Array.isArray(initialTransfers)) {
+            setTransfers(initialTransfers)
+          } else {
+            console.error("Received non-array initial transfers:", initialTransfers)
+            setTransfers([])
+          }
+          setLoading(false)
+
+          window.electron.ipcRenderer.on("active-uploads", handleTransfers)
+        } else {
+          throw new Error("window.electron.ipcRenderer is not available")
+        }
+      } catch (err) {
+        console.error("Error fetching initial transfers:", err)
+        setError("Failed to load transfers")
+        setTransfers([])
+        setLoading(false)
+      }
+    }
+
+    fetchInitialTransfers()
 
     return () => {
-      window.electron.ipcRenderer.removeAllListeners("active-uploads")
+      if (window.electron && window.electron.ipcRenderer) {
+        window.electron.ipcRenderer.removeListener("active-uploads", handleTransfers)
+      }
     }
-
   }, [])
+
+  if (loading) {
+    return <div>Cargando...</div>
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>
+  }
 
   return (
     <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md transition-colors duration-300">
@@ -47,7 +91,10 @@ export default function TransferList () {
       </h2>
       <div className="h-96 overflow-y-auto space-y-4">
         {transfers.map((transfer) => (
-          <div key={transfer.id} className="p-4 bg-gray-100 dark:bg-gray-700 rounded-lg transition-colors duration-300">
+          <div
+            key={transfer.id}
+            className="p-4 bg-gray-100 dark:bg-gray-700 rounded-lg transition-colors duration-300"
+          >
             <div className="flex justify-between mb-2">
               <span className="font-semibold">{transfer.clientIP}</span>
               <span>{transfer.fileName}</span>
@@ -59,7 +106,7 @@ export default function TransferList () {
               ></div>
             </div>
             <div className="flex justify-between text-sm">
-              <span>{transfer.progress.toFixed(2)}%</span>
+              <span>{transfer.progress}%</span>
               <span>{transfer.speed}</span>
               <span>{transfer.total}</span>
             </div>
@@ -69,4 +116,3 @@ export default function TransferList () {
     </div>
   )
 }
-

@@ -1,4 +1,5 @@
-import { useEffect, useState, useRef } from "react"
+import { useEffect, useRef } from "react"
+import QRCode from "react-qr-code"
 
 interface QRModalProps {
   onClose: () => void
@@ -6,12 +7,10 @@ interface QRModalProps {
 }
 
 export default function QRModal ({ onClose, serverAddress }: QRModalProps) {
-  const [qrCode, setQrCode] = useState("")
   const modalRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     // Simulating QR code generation
-    setQrCode(`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(serverAddress)}`)
 
     const handleClickOutside = (event: MouseEvent) => {
       if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
@@ -47,7 +46,7 @@ export default function QRModal ({ onClose, serverAddress }: QRModalProps) {
         </button>
         <h2 className="text-2xl font-bold mb-4 text-center">QR Code</h2>
         <div className="flex justify-center mb-4">
-          {qrCode && <img src={qrCode || "/placeholder.svg"} alt="QR Code" className="w-48 h-48" />}
+          <QRCode value="serverAddress" size={198} />
         </div>
         <p className="mb-2 text-sm text-gray-600 dark:text-gray-400 text-center">
           Scan this QR code to access the client page for file transfers.

@@ -1,11 +1,27 @@
-☐ Arreglar en el frontend: Quitar la direccion mac ya que no se usa
+✔ Arreglar en el frontend: Quitar la direccion mac ya que no se usa @started(25-02-06 21:22) @done(25-02-06 21:23) @lasted(1m31s)
 
-☐ Arreglar que no se muestran las transferencias de archivos en el frontend
+✔ Arreglar que no se muestran las transferencias de archivos en el frontend @started(25-02-08 11:38) @done(25-02-09 13:29) @lasted(1d1h51m52s)
 
-☐ Agregar encendido y apagado del servidor
+✔ Agregar encendido y apagado del servidor @started(25-02-08 11:05) @done(25-02-08 11:23) @lasted(18m53s)
 
-☐ Agregar mustra de direccion ip en la ventana pricipal
+✔ Agregar mustra de direccion ip en la ventana pricipal @done(25-02-08 11:24)
 
-☐ Agregar mustra de codigo qr y direccion ip
+✔ Agregar mustra de codigo qr y direccion ip @started(25-02-08 11:25) @done(25-02-08 11:33) @lasted(8m38s)
+
+✔ Agregar pausar la carga y poder eliminarla si esta pausada en el cliente, si no esta pauasada no puede ser eliminada @done(25-02-08 15:27)
+
+✔ Si el cliente se desconecta, cancelar todas las cargar al servidor @done(25-02-08 15:27)
+
+☐ Hacer que el archivo no sea desconocido en la pantalla de carga en electron
 
 ☐ Traducer a ingles los comentarios y el apartado del cliente
+
+☐ Leer y saber que hace '@electron-toolkit/eslint-config-prettier'
+
+✔ Saber como configurar prettier @done(25-02-08 12:18)
+
+✔ Saber como desactivar regla de prettier y de eslit @done(25-02-08 12:18)
+
+☐ Agregar testing
+
+☐ Actualizar el readme
