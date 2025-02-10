@@ -12,9 +12,13 @@
 
 ✔ Si el cliente se desconecta, cancelar todas las cargar al servidor @done(25-02-08 15:27)
 
-☐ Hacer que el archivo no sea desconocido en la pantalla de carga en electron
+✔ Hacer que el archivo no sea desconocido en la pantalla de carga en electron @started(25-02-09 14:48) @done(25-02-09 19:45) @lasted(4h57m30s)
 
-☐ Traducer a ingles los comentarios y el apartado del cliente
+✔ Traducir todo en ingles @started(25-02-09 19:45) @done(25-02-09 20:22) @lasted(37m27s)
+
+☐ Agregar todos los iconos a un solo archivo @started(25-02-09 20:22)
+
+✔ Traducer a ingles los comentarios y el apartado del cliente @done(25-02-09 20:22)
 
 ☐ Leer y saber que hace '@electron-toolkit/eslint-config-prettier'
 

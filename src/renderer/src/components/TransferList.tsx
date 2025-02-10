@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react"
+import { Cloud } from "./icons"
 
 interface Transfer {
   id: string
@@ -73,20 +74,7 @@ export default function TransferList () {
   return (
     <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md transition-colors duration-300">
       <h2 className="text-xl font-semibold mb-4 flex items-center">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-6 w-6 mr-2"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-          />
-        </svg>
+        <Cloud />
         Active Transfers
       </h2>
       <div className="h-96 overflow-y-auto space-y-4">

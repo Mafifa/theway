@@ -1,3 +1,5 @@
+import { Users } from "./icons";
+
 type Users = string[]
 
 export default function UserList ({ users }: { users: Users }) {
@@ -8,20 +10,7 @@ export default function UserList ({ users }: { users: Users }) {
   return (
     <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md transition-colors duration-300">
       <h2 className="text-xl font-semibold mb-4 flex items-center">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-6 w-6 mr-2"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
-          />
-        </svg>
+        <Users />
         Connected Users
       </h2>
       <div className="h-64 overflow-y-auto">
