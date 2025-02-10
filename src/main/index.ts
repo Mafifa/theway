@@ -8,9 +8,9 @@ import { getActiveUploads } from './core/controllers/uploadController'
 
 function createWindow(): void {
   const mainWindow = new BrowserWindow({
-    width: 1200,
+    width: 1300,
     height: 670,
-    minWidth: 1200,
+    minWidth: 1300,
     show: false,
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),

@@ -11,11 +11,11 @@ export default function ServerStatus ({ isOn, setIsOn, serverAddress }: ServerSt
   return (
     <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md transition-colors duration-300">
       <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-2">
           <div className={`w-4 h-4 rounded-full ${isOn ? 'bg-green-500' : 'bg-red-500'}`}></div>
-          <h2 className="text-xl font-semibold">Server Status: {isOn ? 'Online' : 'Offline'}</h2>
+          <h2 className="font-semibold">Server Status: {isOn ? 'Online' : 'Offline'}</h2>
         </div>
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-2">
           {isOn && (
             <span className="text-sm text-gray-600 dark:text-gray-400">{serverAddress}</span>
           )}
