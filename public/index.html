@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Servidor de Archivos</title>
+  <title>TheWay</title>
   <link rel="stylesheet" href="style.css">
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -14,8 +14,8 @@
   <div class="container">
     <header>
       <div class="header-content">
-        <h1>FileShare</h1>
-        <span class="header-subtitle">Comparte archivos fácilmente</span>
+        <h1>TheWay</h1>
+        <span class="header-subtitle">Share files easily</span>
       </div>
       <button id="theme-toggle" aria-label="Cambiar tema">
         <i class="fas fa-moon"></i>
@@ -26,20 +26,20 @@
       <section id="upload-section">
         <div id="drop-zone">
           <i class="fas fa-cloud-upload-alt"></i>
-          <p>Arrastra y suelta archivos aquí o</p>
+          <p>Drag and drop files here</p>
           <form id="uploadForm" enctype="multipart/form-data">
             <label for="fileInput" class="file-input-label">
-              Selecciona archivos
+              Select files
               <input type="file" name="file" id="fileInput" multiple required />
             </label>
-            <button type="submit" id="uploadButton">Subir</button>
+            <button type="submit" id="uploadButton">Upload</button>
           </form>
         </div>
         <div id="file-list"></div>
       </section>
 
       <section id="transfers-section">
-        <h2>Transferencias Activas</h2>
+        <h2>Active transfers</h2>
         <div id="uploads-container"></div>
       </section>
     </main>

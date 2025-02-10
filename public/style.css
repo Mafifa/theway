@@ -48,16 +48,13 @@ header {
   border-radius: 10px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   flex-wrap: wrap;
-  /* Permite que los elementos se envuelvan en pantallas pequeñas */
 }
 
 .header-content {
   display: flex;
   align-items: center;
   flex-grow: 1;
-  /* Permite que el contenido del encabezado ocupe el espacio disponible */
   margin-bottom: 10px;
-  /* Añade un poco de espacio debajo en pantallas pequeñas */
 }
 
 h1 {
@@ -85,11 +82,8 @@ h1 {
   align-items: center;
   justify-content: center;
   width: 40px;
-  /* Ancho fijo */
   height: 40px;
-  /* Altura fija */
   min-width: 40px;
-  /* Ancho mínimo */
 }
 
 #theme-toggle:hover {
@@ -283,18 +277,14 @@ button:hover {
 
   header {
     flex-direction: row;
-    /* Cambiado de column a row */
     align-items: center;
-    /* Centrar verticalmente */
     justify-content: space-between;
-    /* Distribuir el espacio entre los elementos */
   }
 
   .header-content {
     flex-direction: column;
     align-items: flex-start;
     margin-bottom: 0;
-    /* Eliminado el margen inferior */
   }
 
   h1 {
@@ -309,7 +299,6 @@ button:hover {
 
   #theme-toggle {
     margin-left: 10px;
-    /* Añadir un poco de espacio a la izquierda */
   }
 
   #drop-zone {
@@ -346,7 +335,6 @@ button:hover {
     font-size: 1rem;
     padding: 8px;
     width: 36px;
-    /* Ligeramente más pequeño para pantallas muy pequeñas */
     height: 36px;
     min-width: 36px;
   }

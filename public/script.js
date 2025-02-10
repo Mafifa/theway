@@ -8,15 +8,14 @@ const notification = document.getElementById('notification')
 const themeToggle = document.getElementById('theme-toggle')
 
 let files = []
-let uploads = new Map()
+const uploads = new Map()
 
-// Funciones de utilidad
 const formatFileSize = (bytes) => {
   if (bytes === 0) return '0 Bytes'
   const k = 1024
   const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB']
   const i = Math.floor(Math.log(bytes) / Math.log(k))
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
+  return Number.parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
 }
 
 const showNotification = (message, type) => {
@@ -34,10 +33,10 @@ const updateFileList = () => {
     const fileItem = document.createElement('div')
     fileItem.className = 'file-item'
     fileItem.innerHTML = `
-            <span class="file-name">${file.name}</span>
-            <span class="file-size">${formatFileSize(file.size)}</span>
-            <button class="remove-file" data-index="${index}">Eliminar</button>
-        `
+              <span class="file-name">${file.name}</span>
+              <span class="file-size">${formatFileSize(file.size)}</span>
+              <button class="remove-file" data-index="${index}">Delete</button>
+          `
     fileList.appendChild(fileItem)
   })
 }
@@ -46,22 +45,22 @@ const createUploadItem = (file) => {
   const uploadItem = document.createElement('div')
   uploadItem.className = 'upload-item'
   uploadItem.innerHTML = `
-        <div class="upload-item-header">
-            <span class="upload-item-name">${file.name}</span>
-            <span class="upload-item-size">${formatFileSize(file.size)}</span>
-        </div>
-        <div class="upload-item-progress">
-            <div class="upload-item-progress-bar" style="width: 0%"></div>
-        </div>
-        <div class="upload-item-info">
-            <span class="upload-item-status">Esperando...</span>
-            <span class="upload-item-speed"></span>
-        </div>
-        <div class="upload-item-actions">
-            <button class="upload-item-pause"><i class="fas fa-pause"></i> Pausar</button>
-            <button class="upload-item-cancel"><i class="fas fa-times"></i> Cancelar</button>
-        </div>
-    `
+          <div class="upload-item-header">
+              <span class="upload-item-name">${file.name}</span>
+              <span class="upload-item-size">${formatFileSize(file.size)}</span>
+          </div>
+          <div class="upload-item-progress">
+              <div class="upload-item-progress-bar" style="width: 0%"></div>
+          </div>
+          <div class="upload-item-info">
+              <span class="upload-item-status">Waiting...</span>
+              <span class="upload-item-speed"></span>
+          </div>
+          <div class="upload-item-actions">
+              <button class="upload-item-pause"><i class="fas fa-pause"></i> Pause</button>
+              <button class="upload-item-cancel"><i class="fas fa-times"></i> Cancel</button>
+          </div>
+      `
   return uploadItem
 }
 
@@ -89,18 +88,18 @@ fileInput.addEventListener('change', () => {
 
 fileList.addEventListener('click', (e) => {
   if (e.target.classList.contains('remove-file')) {
-    const index = parseInt(e.target.getAttribute('data-index'))
+    const index = Number.parseInt(e.target.getAttribute('data-index'))
     files.splice(index, 1)
     updateFileList()
   }
 })
 
-// Manejar la subida de archivos
+// Handle files upload
 uploadForm.addEventListener('submit', async (e) => {
   e.preventDefault()
 
   if (files.length === 0) {
-    showNotification('Por favor, selecciona al menos un archivo.', 'error')
+    showNotification('Please select at least one file.', 'error')
     return
   }
 
@@ -116,6 +115,7 @@ uploadForm.addEventListener('submit', async (e) => {
     xhr.open('POST', '/upload', true)
     xhr.setRequestHeader('x-file-size', file.size)
     xhr.setRequestHeader('x-socket-id', socket.id)
+    xhr.setRequestHeader('x-file-name', encodeURIComponent(file.name))
 
     const uploadId = Date.now().toString() + i
     uploads.set(uploadId, { xhr, uploadItem, paused: false })
@@ -135,22 +135,22 @@ uploadForm.addEventListener('submit', async (e) => {
 
     xhr.onload = () => {
       if (xhr.status === 200) {
-        showNotification(`${file.name} se ha subido exitosamente.`, 'success')
+        showNotification(`${file.name} has been uploaded successfully.`, 'success')
         uploads.delete(uploadId)
         uploadItem.remove()
       } else {
-        showNotification(`Error al subir ${file.name}`, 'error')
+        showNotification(`Error uploading ${file.name}`, 'error')
       }
     }
 
     xhr.onerror = () => {
-      showNotification(`Error al subir ${file.name}`, 'error')
+      showNotification(`Error uploading ${file.name}`, 'error')
     }
 
     xhr.startTime = Date.now()
     xhr.send(formData)
 
-    // Event listeners para pausar y cancelar
+    // Event listeners to pause and cancel
     const pauseButton = uploadItem.querySelector('.upload-item-pause')
     const cancelButton = uploadItem.querySelector('.upload-item-cancel')
 
@@ -160,13 +160,14 @@ uploadForm.addEventListener('submit', async (e) => {
         upload.xhr.open('POST', '/upload', true)
         upload.xhr.setRequestHeader('x-file-size', file.size)
         upload.xhr.setRequestHeader('x-socket-id', socket.id)
+        upload.xhr.setRequestHeader('x-file-name', encodeURIComponent(file.name))
         upload.xhr.send(formData)
         upload.paused = false
-        pauseButton.innerHTML = '<i class="fas fa-pause"></i> Pausar'
+        pauseButton.innerHTML = '<i class="fas fa-pause"></i> Pause'
       } else {
         upload.xhr.abort()
         upload.paused = true
-        pauseButton.innerHTML = '<i class="fas fa-play"></i> Reanudar'
+        pauseButton.innerHTML = '<i class="fas fa-play"></i> Resume'
       }
     })
 
@@ -182,7 +183,7 @@ uploadForm.addEventListener('submit', async (e) => {
   updateFileList()
 })
 
-// Manejar desconexión
+// Handle disconnection
 window.addEventListener('beforeunload', () => {
   uploads.forEach((upload) => {
     upload.xhr.abort()
@@ -190,7 +191,7 @@ window.addEventListener('beforeunload', () => {
   socket.disconnect()
 })
 
-// Cambiar tema
+// Change theme
 themeToggle.addEventListener('click', () => {
   document.body.classList.toggle('dark-mode')
   const icon = themeToggle.querySelector('i')
@@ -205,28 +206,15 @@ themeToggle.addEventListener('click', () => {
 
 // WebSocket event listeners
 socket.on('connect', () => {
-  console.log('Conectado al servidor')
+  console.log('Connected to server')
 })
 
 socket.on('disconnect', () => {
-  console.log('Desconectado del servidor')
-  showNotification('Se ha perdido la conexión con el servidor', 'error')
+  console.log('Disconnected from server')
+  showNotification('Connection to the server has been lost', 'error')
 })
 
-// Actualizar la lista de dispositivos conectados
-socket.on('devices', (devices) => {
-  const devicesList = document.getElementById('devicesList')
-  if (devicesList) {
-    devicesList.innerHTML = ''
-    devices.forEach((device) => {
-      const li = document.createElement('li')
-      li.textContent = device
-      devicesList.appendChild(li)
-    })
-  }
-})
-
-// Actualizar el progreso desde el servidor
+// Update progress from the server
 socket.on('uploadProgress', (data) => {
   const upload = Array.from(uploads.values()).find(
     (u) => u.uploadItem.querySelector('.upload-item-name').textContent === data.fileName
