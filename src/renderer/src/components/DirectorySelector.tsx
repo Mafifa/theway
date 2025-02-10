@@ -61,9 +61,6 @@ export default function DirectorySelector () {
         ref={fileInputRef}
         onChange={handleFileChange}
         style={{ display: "none" }}
-        // @ts-ignore
-        webkitdirectory=""
-        directory=""
       />
       {showTooltip && selectedPath && (
         <div className="absolute top-full left-0 mt-2 p-2 bg-white dark:bg-gray-800 rounded shadow-md text-sm">

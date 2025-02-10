@@ -9,10 +9,10 @@ export const handleFileUpload = (req, res, _io, connectedDevices) => {
 
   const file = req.file
   if (!file) {
-    return res.status(400).json({ message: 'No se ha subido ningún archivo.' })
+    return res.status(400).json({ message: 'No file uploaded.' })
   }
 
-  console.log(`Archivo recibido de ${clientIP}:`, file.originalname)
+  console.log(`File received from ${clientIP}:`, file.originalname)
 
   const uploadId = `${clientIP}-${Date.now()}`
   activeUploads.set(uploadId, {
@@ -27,7 +27,7 @@ export const handleFileUpload = (req, res, _io, connectedDevices) => {
   })
 
   res.json({
-    message: 'Archivo subido exitosamente.',
+    message: 'File uploaded successfully.',
     filename: file.originalname
   })
 
@@ -35,8 +35,8 @@ export const handleFileUpload = (req, res, _io, connectedDevices) => {
 }
 
 export const calculateSpeed = (bytesUploaded, startTime) => {
-  const elapsedTime = (Date.now() - startTime) / 1000 // tiempo en segundos
-  return bytesUploaded / elapsedTime // bytes por segundo
+  const elapsedTime = (Date.now() - startTime) / 1000 // Time in seconds
+  return bytesUploaded / elapsedTime // bytes per second
 }
 
 export const uploadProgressMiddleware = (io) => {
@@ -47,9 +47,10 @@ export const uploadProgressMiddleware = (io) => {
     const fileSize = Number.parseInt(req.headers['content-length'], 10)
     const clientIP = req.ip.replace('::ffff:', '')
     const socketId = req.headers['x-socket-id']
+    const fileName = req.headers['x-file-name']
 
     if (!socketId) {
-      console.warn('No se proporcionó un socket ID en la solicitud.')
+      console.warn('A socket ID was not provided in the request.')
       return next()
     }
 
@@ -69,12 +70,12 @@ export const uploadProgressMiddleware = (io) => {
           progress: progress.toFixed(2),
           speed: formatFileSize(speed) + '/s',
           uploaded: formatFileSize(bytesUploaded),
-          fileName: req.file ? req.file.originalname : 'Archivo desconocido',
+          fileName: decodeURIComponent(fileName) || 'Unnamed file',
           total: formatFileSize(fileSize),
           status: 'in-progress'
         })
 
-        console.log(`Progreso de carga (${uploadId}):`, progress.toFixed(2) + '%')
+        console.log(`Loading progress (${uploadId}):`, progress.toFixed(2) + '%')
 
         io.to(socketId).emit('uploadProgress', {
           progress: progress.toFixed(2),
@@ -90,7 +91,7 @@ export const uploadProgressMiddleware = (io) => {
     })
 
     req.on('end', () => {
-      console.log(`Carga completada (${uploadId})`)
+      console.log(`Upload completed (${uploadId})`)
 
       activeUploads.set(uploadId, {
         ...activeUploads.get(uploadId),
@@ -111,7 +112,6 @@ export const getActiveUploads = () => {
 
   try {
     const uploads = Array.from(activeUploads.values())
-    console.log('Active uploads:', uploads)
     return uploads
   } catch (error) {
     console.error('Error getting active uploads:', error)

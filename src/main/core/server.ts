@@ -16,7 +16,7 @@ export default function startServer(pathStorage?: string) {
 
   const connectedDevices = new Set()
 
-  // Configuración de la ruta de almacenamiento
+  // Storage path configuration
   const storagePath =
     pathStorage ||
     (is.dev
@@ -27,17 +27,17 @@ export default function startServer(pathStorage?: string) {
     fs.mkdirSync(storagePath, { recursive: true })
   }
 
-  console.log('Dirección de carga actual:', storagePath)
+  console.log('Current upload address:', storagePath)
 
-  // Middleware para servir archivos estáticos
+  // Middleware to serve static files
   app.use(express.static(path.join(__dirname, '..', '..', 'public')))
 
-  // Ruta raíz para servir la interfaz
+  // Root path to serve the interface
   app.get('/', (_req, res) => {
     res.sendFile(path.join(__dirname, '..', '..', 'public/index.html'))
   })
 
-  // Middleware para asociar el socket ID con la solicitud HTTP
+  // Middleware to associate the socket ID with the HTTP request
   app.use((req, _res, next) => {
     const socketId = req.headers['x-socket-id']
     if (socketId) {
@@ -46,19 +46,19 @@ export default function startServer(pathStorage?: string) {
     next()
   })
 
-  // Configuración de Multer
+  // Multer configuration
   const upload = multerConfig(storagePath)
 
-  // Importar rutas
+  // Import routes
   app.use('/', router(upload, io, connectedDevices))
 
-  // WebSocket para manejar dispositivos conectados
+  // WebSocket to manage connected devices
   io.on('connection', (socket) => {
     const clientIP = socket.handshake.address.replace('::ffff:', '')
-    console.log(`Dispositivo conectado: ${clientIP}`)
+    console.log(`Connected device: ${clientIP}`)
     connectedDevices.add(clientIP)
 
-    //Enviar la lista de dispositivos conectados a todas los clientes
+    // Send the list of connected devices to all clients
     const allWindows = BrowserWindow.getAllWindows()
 
     allWindows.forEach((w) => {
@@ -66,7 +66,7 @@ export default function startServer(pathStorage?: string) {
     })
 
     socket.on('disconnect', () => {
-      console.log(`Dispositivo desconectado: ${clientIP}`)
+      console.log(`Disconnected device: ${clientIP}`)
       connectedDevices.delete(clientIP)
 
       allWindows.forEach((w) => {

@@ -35,14 +35,14 @@ function createWindow(): void {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
 
-  // Manejar actualizaciones de cargas activas
+  // Handle updates to active loads
   ipcMain.on('update-active-uploads', () => {
     const uploads = getActiveUploads()
     console.log('Sending active uploads to renderer:', uploads)
     mainWindow.webContents.send('active-uploads', uploads)
   })
 
-  // Manejar solicitudes de cargas activas
+  // Handle active upload requests
   ipcMain.handle('get-active-uploads', () => {
     console.log('Handling get-active-uploads request')
     const uploads = getActiveUploads()
@@ -67,9 +67,9 @@ app.whenReady().then(() => {
       return false
     } else {
       server.listen(port, '0.0.0.0', () => {
-        console.log('Servidor corriendo en:')
+        console.log('Server runnign on port:')
         console.log(`- Local: http://localhost:${port}`)
-        console.log(`- Red:   http://${localIP}:${port}`)
+        console.log(`- Network:   http://${localIP}:${port}`)
       })
       return { red: `http://${localIP}:${port}` }
     }

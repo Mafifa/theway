@@ -16,7 +16,7 @@ const multerConfig = (storagePath: string) => {
 
   return multer({
     storage,
-    limits: { fileSize: Infinity } // Permitir archivos de cualquier tamaño
+    limits: { fileSize: Infinity } // Allow files of any size
   })
 }
 

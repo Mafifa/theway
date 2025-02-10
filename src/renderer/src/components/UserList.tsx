@@ -32,9 +32,9 @@ export default function UserList ({ users }: { users: Users }) {
             </tr>
           </thead>
           <tbody>
-            {/* FIXME: Arreglar que no sea con index */}
-            {users.map((user, index) => (
-              <tr key={index} className="border-b dark:border-gray-700">
+
+            {users.map((user) => (
+              <tr key={user} className="border-b dark:border-gray-700">
                 <td className="py-2">{user}</td>
               </tr>
             ))}
