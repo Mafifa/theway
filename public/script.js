@@ -9,7 +9,6 @@ const themeToggle = document.getElementById('theme-toggle')
 
 let files = []
 const uploads = new Map()
-
 const formatFileSize = (bytes) => {
   if (bytes === 0) return '0 Bytes'
   const k = 1024
@@ -194,13 +193,15 @@ window.addEventListener('beforeunload', () => {
 // Change theme
 themeToggle.addEventListener('click', () => {
   document.body.classList.toggle('dark-mode')
-  const icon = themeToggle.querySelector('i')
+  const themeIcon = document.getElementById('theme-icon')
+
   if (document.body.classList.contains('dark-mode')) {
-    icon.classList.remove('fa-moon')
-    icon.classList.add('fa-sun')
+    // Sol (modo claro)
+    themeIcon.innerHTML = `<path d="M12 2V6M12 18V22M6.7 6.7L8.1 8.1M15.9 6.7L17.3 8.1M6.7 15.9L8.1 17.3M15.9 15.9L17.3 17.3M2 12H6M18 12H22M12 2A10 10 0 1 0 12 22A10 10 0 1 0 12 2Z" fill="yellow" stroke="yellow" stroke-width="2"/>`
   } else {
-    icon.classList.remove('fa-sun')
-    icon.classList.add('fa-moon')
+    // Luna (modo oscuro)
+    themeIcon.innerHTML =
+      '<path d="M21.75 14.37a9.75 9.75 0 0 1-12.12-12.12 1 1 0 0 0-1.38-1.12 10 10 0 1 0 13.62 13.62 1 1 0 0 0-1.12-1.38z"/>'
   }
 })
 

@@ -18,14 +18,19 @@
         <span class="header-subtitle">Share files easily</span>
       </div>
       <button id="theme-toggle" aria-label="Cambiar tema">
-        <i class="fas fa-moon"></i>
+        <svg id="theme-icon" width="30" height="30" viewBox="0 0 24 24" fill="currentColor">
+          <path
+            d="M21.75 14.37a9.75 9.75 0 0 1-12.12-12.12 1 1 0 0 0-1.38-1.12 10 10 0 1 0 13.62 13.62 1 1 0 0 0-1.12-1.38z" />
+        </svg>
       </button>
     </header>
 
     <main>
       <section id="upload-section">
         <div id="drop-zone">
-          <i class="fas fa-cloud-upload-alt"></i>
+          <svg width="50" height="50" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M19 18H5a4 4 0 0 1 0-8h1a6 6 0 0 1 12 0h1a4 4 0 0 1 0 8zM12 14l4 4h-3v4h-2v-4H8l4-4z" />
+          </svg>
           <p>Drag and drop files here</p>
           <form id="uploadForm" enctype="multipart/form-data">
             <label for="fileInput" class="file-input-label">
