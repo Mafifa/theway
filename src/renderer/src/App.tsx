@@ -63,7 +63,7 @@ export default function App () {
     <main className="min-h-screen p-8 bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300">
       <div className="max-w-6xl mx-auto">
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold">Server Monitor</h1>
+          <h1 className="text-3xl font-bold">TheWay Server Monitor</h1>
           <div className="flex items-center space-x-4">
             <DirectorySelector />
             <button
