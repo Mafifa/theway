@@ -27,8 +27,9 @@ export const handleFileUpload = (req, res, _io, connectedDevices) => {
   })
 
   res.json({
-    message: 'File uploaded successfully.',
-    filename: file.originalname
+    message: 'File upload started.',
+    filename: file.originalname,
+    uploadId: uploadId
   })
 
   ipcMain.emit('update-active-uploads', getActiveUploads())
@@ -47,14 +48,26 @@ export const uploadProgressMiddleware = (io) => {
     const fileSize = Number.parseInt(req.headers['content-length'], 10)
     const clientIP = req.ip.replace('::ffff:', '')
     const socketId = req.headers['x-socket-id']
-    const fileName = req.headers['x-file-name']
+    const fileName = decodeURIComponent(req.headers['x-file-name'] as string)
+    const uploadId = req.headers['x-upload-id'] as string
 
-    if (!socketId) {
-      console.warn('A socket ID was not provided in the request.')
+    if (!socketId || !uploadId) {
+      console.warn('Socket ID or Upload ID not provided in the request.')
       return next()
     }
 
-    const uploadId = `${clientIP}-${Date.now()}`
+    if (!activeUploads.has(uploadId)) {
+      activeUploads.set(uploadId, {
+        id: uploadId,
+        clientIP,
+        progress: 0,
+        speed: '0 B/s',
+        uploaded: '0 B',
+        fileName: fileName || 'Unnamed file',
+        total: formatFileSize(fileSize),
+        status: 'in-progress'
+      })
+    }
 
     req.on('data', (chunk) => {
       bytesUploaded += chunk.length
@@ -64,20 +77,23 @@ export const uploadProgressMiddleware = (io) => {
         const progress = (bytesUploaded / fileSize) * 100
         const speed = calculateSpeed(bytesUploaded, startTime)
 
-        activeUploads.set(uploadId, {
+        const updatedUpload = {
           id: uploadId,
           clientIP,
           progress: progress.toFixed(2),
           speed: formatFileSize(speed) + '/s',
           uploaded: formatFileSize(bytesUploaded),
-          fileName: decodeURIComponent(fileName) || 'Unnamed file',
+          fileName: fileName || 'Unnamed file',
           total: formatFileSize(fileSize),
           status: 'in-progress'
-        })
+        }
+
+        activeUploads.set(uploadId, updatedUpload)
 
         console.log(`Loading progress (${uploadId}):`, progress.toFixed(2) + '%')
 
         io.to(socketId).emit('uploadProgress', {
+          uploadId,
           progress: progress.toFixed(2),
           speed: formatFileSize(speed) + '/s',
           uploaded: formatFileSize(bytesUploaded),
@@ -100,6 +116,12 @@ export const uploadProgressMiddleware = (io) => {
       })
 
       ipcMain.emit('update-active-uploads', getActiveUploads())
+
+      // Remove completed upload after a short delay
+      setTimeout(() => {
+        activeUploads.delete(uploadId)
+        ipcMain.emit('update-active-uploads', getActiveUploads())
+      }, 5000)
     })
 
     next()
@@ -126,6 +148,7 @@ export const cleanupActiveUploads = () => {
       activeUploads.delete(id)
     }
   }
+  ipcMain.emit('update-active-uploads', getActiveUploads())
 }
 
-setInterval(cleanupActiveUploads, 3600000)
+setInterval(cleanupActiveUploads, 60000) // Run cleanup every minute

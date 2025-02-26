@@ -9,6 +9,8 @@ const themeToggle = document.getElementById('theme-toggle')
 
 let files = []
 const uploads = new Map()
+
+// Funciones de utilidad
 const formatFileSize = (bytes) => {
   if (bytes === 0) return '0 Bytes'
   const k = 1024
@@ -32,10 +34,10 @@ const updateFileList = () => {
     const fileItem = document.createElement('div')
     fileItem.className = 'file-item'
     fileItem.innerHTML = `
-              <span class="file-name">${file.name}</span>
-              <span class="file-size">${formatFileSize(file.size)}</span>
+            <span class="file-name">${file.name}</span>
+            <span class="file-size">${formatFileSize(file.size)}</span>
               <button class="remove-file" data-index="${index}">Delete</button>
-          `
+        `
     fileList.appendChild(fileItem)
   })
 }
@@ -44,22 +46,22 @@ const createUploadItem = (file) => {
   const uploadItem = document.createElement('div')
   uploadItem.className = 'upload-item'
   uploadItem.innerHTML = `
-          <div class="upload-item-header">
-              <span class="upload-item-name">${file.name}</span>
-              <span class="upload-item-size">${formatFileSize(file.size)}</span>
-          </div>
-          <div class="upload-item-progress">
-              <div class="upload-item-progress-bar" style="width: 0%"></div>
-          </div>
-          <div class="upload-item-info">
+        <div class="upload-item-header">
+            <span class="upload-item-name">${file.name}</span>
+            <span class="upload-item-size">${formatFileSize(file.size)}</span>
+        </div>
+        <div class="upload-item-progress">
+            <div class="upload-item-progress-bar" style="width: 0%"></div>
+        </div>
+        <div class="upload-item-info">
               <span class="upload-item-status">Waiting...</span>
-              <span class="upload-item-speed"></span>
-          </div>
-          <div class="upload-item-actions">
+            <span class="upload-item-speed"></span>
+        </div>
+        <div class="upload-item-actions">
               <button class="upload-item-pause"><i class="fas fa-pause"></i> Pause</button>
               <button class="upload-item-cancel"><i class="fas fa-times"></i> Cancel</button>
-          </div>
-      `
+        </div>
+    `
   return uploadItem
 }
 
@@ -117,6 +119,8 @@ uploadForm.addEventListener('submit', async (e) => {
     xhr.setRequestHeader('x-file-name', encodeURIComponent(file.name))
 
     const uploadId = Date.now().toString() + i
+    xhr.setRequestHeader('x-upload-id', uploadId)
+
     uploads.set(uploadId, { xhr, uploadItem, paused: false })
 
     xhr.upload.onprogress = (event) => {
@@ -182,7 +186,7 @@ uploadForm.addEventListener('submit', async (e) => {
   updateFileList()
 })
 
-// Handle disconnection
+// Manejar desconexión
 window.addEventListener('beforeunload', () => {
   uploads.forEach((upload) => {
     upload.xhr.abort()
@@ -190,7 +194,7 @@ window.addEventListener('beforeunload', () => {
   socket.disconnect()
 })
 
-// Change theme
+// Cambiar tema
 themeToggle.addEventListener('click', () => {
   document.body.classList.toggle('dark-mode')
   const themeIcon = document.getElementById('theme-icon')
@@ -215,15 +219,26 @@ socket.on('disconnect', () => {
   showNotification('Connection to the server has been lost', 'error')
 })
 
-// Update progress from the server
+// Actualizar la lista de dispositivos conectados
+socket.on('devices', (devices) => {
+  const devicesList = document.getElementById('devicesList')
+  if (devicesList) {
+    devicesList.innerHTML = ''
+    devices.forEach((device) => {
+      const li = document.createElement('li')
+      li.textContent = device
+      devicesList.appendChild(li)
+    })
+  }
+})
+
+// Actualizar el progreso desde el servidor
 socket.on('uploadProgress', (data) => {
-  const upload = Array.from(uploads.values()).find(
-    (u) => u.uploadItem.querySelector('.upload-item-name').textContent === data.fileName
-  )
-  if (upload) {
-    const progressBar = upload.uploadItem.querySelector('.upload-item-progress-bar')
-    const status = upload.uploadItem.querySelector('.upload-item-status')
-    const speed = upload.uploadItem.querySelector('.upload-item-speed')
+  const uploadItem = document.querySelector(`[data-upload-id="${data.uploadId}"]`)
+  if (uploadItem) {
+    const progressBar = uploadItem.querySelector('.upload-item-progress-bar')
+    const status = uploadItem.querySelector('.upload-item-status')
+    const speed = uploadItem.querySelector('.upload-item-speed')
 
     progressBar.style.width = `${data.progress}%`
     status.textContent = `${data.progress}%`
