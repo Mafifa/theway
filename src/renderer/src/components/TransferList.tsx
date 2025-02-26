@@ -85,7 +85,7 @@ export default function TransferList () {
           >
             <div className="flex justify-between mb-2">
               <span className="font-semibold">{transfer.clientIP}</span>
-              <span>{transfer.fileName.slice(0, 40)}</span>
+              <span>{transfer.fileName?.slice(0, 40)}</span>
             </div>
             <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2.5 mb-2">
               <div
