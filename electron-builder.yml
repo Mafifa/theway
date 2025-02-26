@@ -14,7 +14,7 @@ files:
 asarUnpack:
   - resources/**
 win:
-  executableName: elway
+  executableName: theway
 nsis:
   artifactName: ${name}-${version}-setup.${ext}
   shortcutName: ${productName}

@@ -6,10 +6,13 @@ import startServer from './core/server'
 import { getLocalIP } from './core/utils/utils'
 import { getActiveUploads } from './core/controllers/uploadController'
 
+// Trying to record something
+
 function createWindow(): void {
   const mainWindow = new BrowserWindow({
     width: 1300,
     height: 670,
+    minHeight: 670,
     minWidth: 1300,
     show: false,
     autoHideMenuBar: true,

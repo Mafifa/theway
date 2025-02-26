@@ -1,9 +1,9 @@
 {
-  "name": "elway",
+  "name": "theway",
   "version": "1.0.0",
-  "description": "An Electron application with React and TypeScript",
+  "description": "The way to transfer files from your cellphone to your PC",
   "main": "./out/main/index.js",
-  "author": "example.com",
+  "author": "Mafifa",
   "homepage": "https://electron-vite.org",
   "scripts": {
     "format": "prettier --write .",
@@ -23,7 +23,6 @@
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.1",
     "@electron-toolkit/utils": "^3.0.0",
-    "@types/multer": "^1.4.12",
     "electron-updater": "^6.1.7",
     "express": "^4.21.2",
     "multer": "^1.4.5-lts.1",
@@ -32,6 +31,7 @@
     "socket.io-client": "^4.8.1"
   },
   "devDependencies": {
+    "@types/multer": "^1.4.12",
     "@electron-toolkit/eslint-config-prettier": "^2.0.0",
     "@electron-toolkit/eslint-config-ts": "^2.0.0",
     "@electron-toolkit/tsconfig": "^1.0.1",

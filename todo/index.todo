@@ -1,3 +1,19 @@
+☐ Agregar testing
+
+✔ Actualizar el readme @done(25-02-23 15:49)
+
+☐ Configurar el updater
+
+☐ Configurar el builder para 32bits
+
+✔ Revisar que todas las dependencias sean compatibles con 32bits @started(25-02-23 15:04) @done(25-02-23 15:05) @lasted(1m52s)
+
+☐ Probar la aplicacion en modo de produccion
+
+✔ Agregar la configuracion de seleccionar la carpeta de subida @done(25-02-23 16:08)
+
+✔ Agregar las imagenes de subida y modo nocturno de forma offline en el cliente @started(25-02-23 12:51) @done(25-02-23 15:03) @lasted(2h12m49s)
+
 ✔ Arreglar en el frontend: Quitar la direccion mac ya que no se usa @started(25-02-06 21:22) @done(25-02-06 21:23) @lasted(1m31s)
 
 ✔ Arreglar que no se muestran las transferencias de archivos en el frontend @started(25-02-08 11:38) @done(25-02-09 13:29) @lasted(1d1h51m52s)
@@ -20,12 +36,6 @@
 
 ✔ Traducer a ingles los comentarios y el apartado del cliente @done(25-02-09 20:22)
 
-☐ Leer y saber que hace '@electron-toolkit/eslint-config-prettier'
-
 ✔ Saber como configurar prettier @done(25-02-08 12:18)
 
 ✔ Saber como desactivar regla de prettier y de eslit @done(25-02-08 12:18)
-
-☐ Agregar testing
-
-☐ Actualizar el readme
