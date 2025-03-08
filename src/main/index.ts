@@ -5,7 +5,7 @@ import icon from '../../resources/icon.png?asset'
 import startServer from './core/server'
 import { getLocalIP } from './core/utils/utils'
 import { getActiveUploads } from './core/controllers/uploadController'
-
+import { autoUpdater } from 'electron-updater'
 // Trying to record something
 
 function createWindow(): void {
@@ -31,6 +31,34 @@ function createWindow(): void {
     shell.openExternal(details.url)
     return { action: 'deny' }
   })
+
+  //updater
+  // Configuración para actualización automática
+  autoUpdater.autoDownload = true
+  autoUpdater.autoInstallOnAppQuit = true
+
+  autoUpdater.logger = {
+    info: () => {},
+    warn: () => {},
+    error: () => {}
+  }
+
+  autoUpdater.on('update-downloaded', () => {
+    setTimeout(() => {
+      autoUpdater.quitAndInstall(true, true)
+    }, 5000)
+  })
+
+  autoUpdater.on('error', () => {})
+
+  autoUpdater.checkForUpdates()
+
+  setInterval(
+    () => {
+      autoUpdater.checkForUpdates()
+    },
+    30 * 60 * 1000
+  )
 
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
     mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'])

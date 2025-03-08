@@ -1,10 +1,14 @@
 {
   "name": "theway",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "description": "The way to transfer files from your cellphone to your PC",
   "main": "./out/main/index.js",
   "author": "Mafifa",
-  "homepage": "https://electron-vite.org",
+  "homepage": "https://github.com/Mafifa/theway",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Mafifa/theway.git"
+  },
   "scripts": {
     "format": "prettier --write .",
     "lint": "eslint . --ext .js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix",
@@ -53,5 +57,15 @@
     "tailwindcss": "^3.4.17",
     "typescript": "^5.5.2",
     "vite": "^5.3.1"
+  },
+  "build": {
+    "appId": "com.mafifa.theway",
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "Mafifa",
+        "repo": "theway"
+      }
+    ]
   }
 }

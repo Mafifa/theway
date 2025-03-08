@@ -1,5 +1,5 @@
-appId: com.electron.app
-productName: elway
+appId: com.mafifa.theway
+productName: theway
 directories:
   buildResources: build
 files:
@@ -41,5 +41,5 @@ appImage:
   artifactName: ${name}-${version}.${ext}
 npmRebuild: false
 publish:
-  provider: generic
-  url: https://example.com/auto-updates
+  provider: github
+  url: https://github.com/Mafifa/theway
