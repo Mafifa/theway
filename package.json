@@ -1,6 +1,6 @@
 {
   "name": "theway",
-  "version": "1.0.3",
+  "version": "1.0.6",
   "description": "The way to transfer files from your cellphone to your PC",
   "main": "./out/main/index.js",
   "author": "Mafifa",
