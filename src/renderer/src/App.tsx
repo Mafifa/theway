@@ -55,6 +55,7 @@ export default function App () {
       } else {
         setIsServerOn(true)
         setServerAddress(response.red)
+        console.log(response.red)
       }
     })
   }

@@ -38,7 +38,7 @@ export default function QRModal ({ onClose, serverAddress }: QRModalProps) {
         </button>
         <h2 className="text-2xl font-bold mb-4 text-center">QR Code</h2>
         <div className="flex justify-center mb-4">
-          <QRCode value="serverAddress" size={198} />
+          <QRCode value={serverAddress} size={198} />
         </div>
         <p className="mb-2 text-sm text-gray-600 dark:text-gray-400 text-center">
           Scan this QR code to access the client page for file transfers.
